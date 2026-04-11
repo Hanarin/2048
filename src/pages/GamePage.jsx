@@ -4,10 +4,10 @@ import { useState } from "react";
 
 const GamePage = () => {
   const [board, setBoard] = useState([
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
+    [0, 2, 4, 8],
+    [16, 32, 64, 128],
+    [256, 512, 1024, 2048],
+    [5096, 10192, 20384, 40768],
   ]);
   const [score, setScore] = useState(0);
 

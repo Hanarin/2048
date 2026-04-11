@@ -1,7 +1,10 @@
 .board {
+  background-color: #0d3c58;
   aspect-ratio: 1 / 1;
   width: 400px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
+  padding: 16px;
+  border-radius: 16px;
 }

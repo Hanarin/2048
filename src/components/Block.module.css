@@ -1,6 +1,11 @@
 .block {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   aspect-ratio: 1 / 1;
   width: 100%;
+  font-size: 28px;
+  font-weight: 700;
   background-color: var(--bg);
   color: var(--color);
   border-radius: 8px;
