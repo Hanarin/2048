@@ -43,7 +43,11 @@ const GamePage = () => {
     setBoard(
       board.map((row, r) =>
         row.map((cell, c) =>
-          r === i && c === j ? (Math.floor(Math.random() * 2) + 1) * 2 : cell,
+          r === i && c === j
+            ? Math.floor(Math.random() * 10) !== 5
+              ? 2
+              : 4
+            : cell,
         ),
       ),
     );
@@ -52,7 +56,9 @@ const GamePage = () => {
   return (
     <div className={styles.page}>
       <div className={styles.boardWrapper}>
-        <div className={styles.scoreText}>점수: {score}</div>
+        <div className={styles.scoreText} onClick={addNewBlock}>
+          점수: {score}
+        </div>
         <Board board={board} />
       </div>
     </div>
