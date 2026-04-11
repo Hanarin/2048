@@ -10,7 +10,7 @@ const Block = ({ key, value }) => {
     32: { background: "#4EA8D8", color: "#fff" },
     64: { background: "#2E8DC0", color: "#fff" },
     128: { background: "#1A6FA0", color: "#fff" },
-    256: { background: "#155480", color: "#fff" },
+    256: { background: "#8ED8D8", color: "#fff" },
     512: { background: "#5BC4C4", color: "#fff" },
     1024: { background: "#29A9A9", color: "#fff" },
     2048: { background: "#F5C842", color: "#7D6608" },
