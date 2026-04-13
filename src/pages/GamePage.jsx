@@ -72,7 +72,7 @@ const GamePage = () => {
     setBoard((prevBoard) => {
       if (["ArrowUp", "ArrowDown"].includes(direction)) {
         const newBoard = Array.from({ length: prevBoard.length }, () =>
-          Array.from({ length: board[0].length }, () => 0),
+          Array.from({ length: prevBoard[0].length }, () => 0),
         );
         for (let i = 0; i < prevBoard[0].length; i++) {
           const column = [];
