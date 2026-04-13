@@ -85,11 +85,10 @@ const GamePage = () => {
               if (c < mergedColumn.length) newBoard[c][i] = mergedColumn[c];
               else newBoard[c][i] = 0;
             } else {
-              if (c < prevBoard.length - mergedColumn.length)
-                newBoard[c][i] = 0;
+              if (c < column.length - mergedColumn.length) newBoard[c][i] = 0;
               else
                 newBoard[c][i] =
-                  mergedColumn[c - (prevBoard.length - mergedColumn.length)];
+                  mergedColumn[c - (column.length - mergedColumn.length)];
             }
           }
         }
