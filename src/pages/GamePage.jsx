@@ -10,6 +10,7 @@ const GamePage = () => {
     [0, 0, 0, 0],
   ]);
   const [score, setScore] = useState(0);
+  const [boardChanged, setBoardChanged] = useState(false);
 
   useEffect(() => {
     const empty = [];
@@ -35,13 +36,19 @@ const GamePage = () => {
   useEffect(() => {
     const handleKeyDown = (e) => {
       moveBlocks(e.key);
-      addNewBlock();
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+
+  useEffect(() => {
+    if (boardChanged) {
+      addNewBlock();
+      setBoardChanged(false);
+    }
+  }, [boardChanged]);
 
   const addNewBlock = () => {
     setBoard((prevBoard) => {
@@ -92,9 +99,11 @@ const GamePage = () => {
             }
           }
         }
+        if (JSON.stringify(prevBoard) !== JSON.stringify(newBoard))
+          setBoardChanged(true);
         return newBoard;
       } else if (["ArrowLeft", "ArrowRight"].includes(direction)) {
-        return prevBoard.map((row) => {
+        const newBoard = prevBoard.map((row) => {
           const mergedRow = merge(row);
           const zeros = Array.from(
             { length: row.length - mergedRow.length },
@@ -103,6 +112,9 @@ const GamePage = () => {
           if (direction === "ArrowLeft") return mergedRow.concat(zeros);
           else return zeros.concat(mergedRow);
         });
+        if (JSON.stringify(prevBoard) !== JSON.stringify(newBoard))
+          setBoardChanged(true);
+        return newBoard;
       }
       return prevBoard;
     });
