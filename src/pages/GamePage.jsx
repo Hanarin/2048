@@ -26,9 +26,6 @@ const GamePage = () => {
     }
   };
 
-  // TODO: 같은 블럭이 3개가 겹쳐있을 때 이동 방향에 따라 합쳐지는 블럭이 달라지도록 수정하기
-  // [2, 2, 2, 0]을 왼쪽으로 이동할 경우 [4, 2, 0, 0]
-  // [2, 2, 2, 0]을 오른쪽으로 이동할 경우 [0, 0, 2, 4]
   const moveBlocks = (state, direction) => {
     if (["ArrowUp", "ArrowDown"].includes(direction)) {
       let score = 0;
@@ -128,9 +125,9 @@ const GamePage = () => {
   // const initialState = {
   //   board: [
   //     [0, 0, 0, 0],
-  //     [2, 0, 0, 0],
-  //     [2, 0, 0, 0],
-  //     [2, 0, 0, 0],
+  //     [0, 0, 0, 0],
+  //     [0, 0, 0, 0],
+  //     [0, 0, 0, 0],
   //   ],
   //   score: 0,
   // };
