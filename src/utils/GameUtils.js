@@ -7,7 +7,7 @@ const addNewBlock = (board) => {
   );
   if (empty.length > 0) {
     const [i, j] = empty[Math.floor(Math.random() * empty.length)];
-    return board.map((row, r) =>
+    const newBoard = board.map((row, r) =>
       row.map((cell, c) =>
         r === i && c === j
           ? Math.floor(Math.random() * 10) !== 5
@@ -16,8 +16,9 @@ const addNewBlock = (board) => {
           : cell,
       ),
     );
+    return { newBoard, gameOver: empty.length === 1 && isGameOver(newBoard) };
   } else {
-    // 게임 오버
+    return { newBoard: board, gameOver: isGameOver(board) };
   }
 };
 
@@ -86,4 +87,16 @@ const merge = (arr) => {
   return { mergedArr, scoreGained };
 };
 
-export { addNewBlock, moveBlocks, merge };
+const isGameOver = (board) => {
+  for (let r = 0; r < board.length; r++) {
+    for (let c = 0; c < board[0].length; c++) {
+      if (c + 1 < board[0].length && board[r][c] === board[r][c + 1])
+        return false;
+      if (r + 1 < board[0].length && board[r][c] === board[r + 1][c])
+        return false;
+    }
+  }
+  return true;
+};
+
+export { addNewBlock, moveBlocks };

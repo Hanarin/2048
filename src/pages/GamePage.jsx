@@ -27,7 +27,7 @@ const GamePage = () => {
         (r === i1 && c === j1) || (r === i2 && c === j2) ? 2 : cell,
       ),
     );
-    return { board: newBoard, score: 0 };
+    return { board: newBoard, score: 0, gameOver: false };
   };
 
   const initialState = createInitialState();
@@ -40,6 +40,7 @@ const GamePage = () => {
   //     [0, 0, 0, 0],
   //   ],
   //   score: 0,
+  //   gameOver: false,
   // };
 
   const reducer = (state, action) => {
@@ -51,8 +52,13 @@ const GamePage = () => {
         );
         if (JSON.stringify(state.board) === JSON.stringify(movedBoard))
           return state;
-        const newBoard = addNewBlock(movedBoard);
-        return { ...state, board: newBoard, score: state.score + scoreGained };
+        const { newBoard, gameOver } = addNewBlock(movedBoard);
+        return {
+          ...state,
+          board: newBoard,
+          score: state.score + scoreGained,
+          gameOver,
+        };
       }
     }
   };
@@ -75,7 +81,7 @@ const GamePage = () => {
         <div className={styles.scoreText} onClick={addNewBlock}>
           점수: {state.score}
         </div>
-        <Board board={state.board} />
+        <Board board={state.board} gameOver={state.gameOver} />
       </div>
     </div>
   );
