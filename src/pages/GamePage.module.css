@@ -1,5 +1,7 @@
 .page {
   display: flex;
+  flex-direction: column;
+  gap: 32px;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
@@ -15,4 +17,23 @@
 .scoreText {
   padding-right: 4px;
   margin: 0;
+}
+
+.replayButton {
+  padding: 16px 128px;
+  font-size: 1rem;
+  background-color: #0d3c58;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.replayButton:hover {
+  background-color: #155a82;
+}
+
+.replayButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

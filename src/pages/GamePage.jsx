@@ -60,10 +60,15 @@ const GamePage = () => {
           gameOver,
         };
       }
+      case "RESET": {
+        return createInitialState();
+      }
     }
   };
 
   const [state, dispatch] = useReducer(reducer, initialState);
+
+  const onClick = () => {};
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -78,11 +83,21 @@ const GamePage = () => {
   return (
     <div className={styles.page}>
       <div className={styles.boardWrapper}>
-        <div className={styles.scoreText} onClick={addNewBlock}>
-          점수: {state.score}
-        </div>
-        <Board board={state.board} gameOver={state.gameOver} />
+        {!state.gameOver && (
+          <div className={styles.scoreText} onClick={addNewBlock}>
+            SCORE: {state.score}
+          </div>
+        )}
+        <Board state={state} />
       </div>
+      {state.gameOver && (
+        <button
+          className={styles.replayButton}
+          onClick={() => dispatch({ type: "RESET" })}
+        >
+          Replay
+        </button>
+      )}
     </div>
   );
 };

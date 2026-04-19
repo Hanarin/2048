@@ -1,15 +1,16 @@
 import styles from "./Board.module.css";
 import Block from "./Block";
 
-const Board = ({ board, gameOver }) => {
+const Board = ({ state }) => {
   return (
     <div className={styles.board}>
-      {board.flat().map((value, index) => (
+      {state.board.flat().map((value, index) => (
         <Block key={index} value={value} />
       ))}
-      {gameOver && (
+      {state.gameOver && (
         <div className={styles.overlay}>
           <span className={styles.gameOverText}>Game Over</span>
+          <span className={styles.scoreText}>score: {state.score}</span>
         </div>
       )}
     </div>
