@@ -10,6 +10,12 @@
   border-radius: 16px;
 }
 
+.cell {
+  background-color: rgba(150, 150, 150, 0.1);
+  border-radius: 8px;
+  aspect-ratio: 1 / 1;
+}
+
 .overlay {
   position: absolute;
   inset: 0;

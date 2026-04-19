@@ -1,12 +1,17 @@
 .block {
+  position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 94px;
   aspect-ratio: 1 / 1;
-  width: 100%;
   font-size: 28px;
   font-weight: 700;
   background-color: var(--bg);
   color: var(--color);
+  transform: translate(
+    calc(16px + var(--col) * (var(--cell-size) + var(--gap))),
+    calc(16px + var(--row) * (var(--cell-size) + var(--gap)))
+  );
   border-radius: 8px;
 }

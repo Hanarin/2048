@@ -5,60 +5,42 @@ import { addNewBlock, moveBlocks } from "../utils/GameUtils.js";
 
 const GamePage = () => {
   const createInitialState = () => {
-    const board = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
+    const blocks = [];
     const empty = [];
-    board.forEach((row, r) =>
-      row.forEach((_, c) => {
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
         empty.push([r, c]);
-      }),
-    );
-    const [i1, j1] = empty.splice(
+      }
+    }
+    const [r1, c1] = empty.splice(
       Math.floor(Math.random() * empty.length),
       1,
     )[0];
-    const [i2, j2] = empty[Math.floor(Math.random() * empty.length)];
-    const newBoard = board.map((row, r) =>
-      row.map((cell, c) =>
-        (r === i1 && c === j1) || (r === i2 && c === j2) ? 2 : cell,
-      ),
-    );
-    return { board: newBoard, score: 0, gameOver: false };
+    const [r2, c2] = empty[Math.floor(Math.random() * empty.length)];
+    blocks.push({ id: 1, value: 2, row: r1, col: c1 });
+    blocks.push({ id: 2, value: 2, row: r2, col: c2 });
+    return { blocks, top: 2, score: 0, gameOver: false };
   };
 
   const initialState = createInitialState();
 
-  // const initialState = {
-  //   board: [
-  //     [0, 0, 0, 0],
-  //     [0, 0, 0, 0],
-  //     [0, 0, 0, 0],
-  //     [0, 0, 0, 0],
-  //   ],
-  //   score: 0,
-  //   gameOver: false,
-  // };
-
   const reducer = (state, action) => {
     switch (action.type) {
       case "MOVE": {
-        const { newBoard: movedBoard, scoreGained } = moveBlocks(
-          state,
-          action.direction,
-        );
-        if (JSON.stringify(state.board) === JSON.stringify(movedBoard))
-          return state;
-        const { newBoard, gameOver } = addNewBlock(movedBoard);
-        return {
-          ...state,
-          board: newBoard,
-          score: state.score + scoreGained,
-          gameOver,
-        };
+        // const { newBoard: movedBoard, scoreGained } = moveBlocks(
+        //   state,
+        //   action.direction,
+        // );
+        // if (JSON.stringify(state.board) === JSON.stringify(movedBoard))
+        //   return state;
+        // const { newBoard, gameOver } = addNewBlock(movedBoard);
+        // return {
+        //   ...state,
+        //   board: newBoard,
+        //   score: state.score + scoreGained,
+        //   gameOver,
+        // };
+        return state;
       }
       case "RESET": {
         return createInitialState();
@@ -88,7 +70,11 @@ const GamePage = () => {
             SCORE: {state.score}
           </div>
         )}
-        <Board state={state} />
+        <Board
+          blocks={state.blocks}
+          score={state.score}
+          gameOver={state.gameOver}
+        />
       </div>
       {state.gameOver && (
         <button

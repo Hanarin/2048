@@ -1,6 +1,6 @@
 import styles from "./Block.module.css";
 
-const Block = ({ key, value }) => {
+const Block = ({ key, value, row, col }) => {
   const colorMap = {
     0: { background: "#BDC3C7" },
     2: { background: "#FFFFFF", color: "#111" },
@@ -17,8 +17,12 @@ const Block = ({ key, value }) => {
   };
 
   const style = {
+    "--cell-size": "94px",
+    "--gap": "8px",
     "--bg": colorMap[value]?.background ?? "#E6A817",
     "--color": colorMap[value]?.color ?? "#333",
+    "--row": row,
+    "--col": col,
   };
 
   return (
