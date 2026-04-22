@@ -4,6 +4,15 @@ import { useEffect, useReducer } from "react";
 import { addNewBlock, moveBlocks } from "../utils/GameUtils.js";
 
 const GamePage = () => {
+  // block = {
+  //   id: 1,
+  //   value: 2,
+  //   row: 0,
+  //   col: 0,
+  //   isNew: true, // 목적: 생성 애니메이션
+  //   merged: false, // 목적: 병합 애니메이션
+  //   toRemove: false, // 목적: 삭제 애니메이션
+  // };
   const createInitialState = () => {
     const blocks = [];
     const empty = [];
@@ -17,8 +26,24 @@ const GamePage = () => {
       1,
     )[0];
     const [r2, c2] = empty[Math.floor(Math.random() * empty.length)];
-    blocks.push({ id: 1, value: 2, row: r1, col: c1 });
-    blocks.push({ id: 2, value: 2, row: r2, col: c2 });
+    blocks.push({
+      id: 1,
+      value: 2,
+      row: r1,
+      col: c1,
+      isNew: true,
+      merged: false,
+      toRemove: false,
+    });
+    blocks.push({
+      id: 2,
+      value: 2,
+      row: r2,
+      col: c2,
+      isNew: true,
+      merged: false,
+      toRemove: false,
+    });
     return { blocks, top: 2, score: 0, gameOver: false };
   };
 
