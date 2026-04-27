@@ -1,6 +1,6 @@
 import styles from "./GamePage.module.css";
 import Board from "../components/Board";
-import { useEffect, useReducer } from "react";
+import { useRef, useEffect, useReducer } from "react";
 import {
   createInitialState,
   addNewBlock,
