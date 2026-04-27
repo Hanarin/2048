@@ -44,29 +44,34 @@ const GamePage = () => {
       merged: false,
       toRemove: false,
     });
-    return { blocks, top: 2, score: 0, gameOver: false };
+    nextId.current = 3;
+    return { blocks, score: 0, gameOver: false };
   };
 
   const initialState = createInitialState();
 
   const reducer = (state, action) => {
     switch (action.type) {
-      case "MOVE": {
-        // const { newBoard: movedBoard, scoreGained } = moveBlocks(
-        //   state,
-        //   action.direction,
-        // );
-        // if (JSON.stringify(state.board) === JSON.stringify(movedBoard))
-        //   return state;
-        // const { newBoard, gameOver } = addNewBlock(movedBoard);
-        // return {
-        //   ...state,
-        //   board: newBoard,
-        //   score: state.score + scoreGained,
-        //   gameOver,
-        // };
-        return state;
-      }
+      case "MOVE":
+        {
+          const { newBlocks, scoreGained, hasChanged } = moveBlocks(
+            state.blocks.map((block) => ({ ...block, merged: false })), // merged 플래그 초기화
+            action.direction,
+          );
+          return state;
+        }
+        if (!hasChanged) return state;
+        const { newBlocks, gameOver } = addNewBlock(
+          state.blocks,
+          nextId.current,
+        );
+        if (!gameOver) nextId.current++;
+        return {
+          ...state,
+          blocks: newBlocks,
+          score: state.score + scoreGained,
+          gameOver,
+        };
       case "RESET": {
         return createInitialState();
       }
@@ -74,6 +79,7 @@ const GamePage = () => {
   };
 
   const [state, dispatch] = useReducer(reducer, initialState);
+  const nextId = useRef(1);
 
   const onClick = () => {};
 

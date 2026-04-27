@@ -1,28 +1,30 @@
 const SIZE = 4;
 
-// const addNewBlock = (board) => {
-//   const empty = [];
-//   board.forEach((row, r) =>
-//     row.forEach((cell, c) => {
-//       if (cell === 0) empty.push([r, c]);
-//     }),
-//   );
-//   if (empty.length > 0) {
-//     const [i, j] = empty[Math.floor(Math.random() * empty.length)];
-//     const newBoard = board.map((row, r) =>
-//       row.map((cell, c) =>
-//         r === i && c === j
-//           ? Math.floor(Math.random() * 10) !== 5
-//             ? 2
-//             : 4
-//           : cell,
-//       ),
-//     );
-//     return { newBoard, gameOver: empty.length === 1 && isGameOver(newBoard) };
-//   } else {
-//     return { newBoard: board, gameOver: isGameOver(board) };
-//   }
-// };
+const addNewBlock = (blocks, nextId) => {
+  const blockSet = new Set(blocks.map((block) => `${block.row},${block.col}`));
+  const empty = [];
+  const newBlocks = blocks.map((block) => ({ ...block }));
+  for (let r = 0; r < SIZE; r++) {
+    for (let c = 0; c < SIZE; c++) {
+      if (!blockSet.has(`${r},${c}`)) empty.push([r, c]);
+    }
+  }
+  if (empty.length > 0) {
+    const [r, c] = empty[Math.floor(Math.random() * empty.length)];
+    newBlocks.push({
+      id: nextId,
+      value: Math.random() < 0.9 ? 2 : 4,
+      row: r,
+      col: c,
+      isNew: true,
+      merged: false,
+      toRemove: false,
+    });
+    return { newBlocks, gameOver: empty.length === 1 && isGameOver(newBlocks) };
+  } else {
+    return { newBlocks: blocks, gameOver: isGameOver(blocks) };
+  }
+};
 
 const getTransform = (direction) => {
   switch (direction) {
@@ -59,11 +61,6 @@ const getTransform = (direction) => {
   }
 };
 
-// TODO: 왼쪽 방향 이동 기준으로 변환 후 이동 후 원래 방향으로 변환
-// ArrowLeft: 그대로
-// ArrowRight: col => SIZE - 1 - col
-// ArrowUp: row => col, col => row
-// ArrowDown: row => SIZE - 1 - col, col => row / row => col, col => SIZE - 1 - row
 const moveBlocks = (blocks, direction) => {
   const transform = getTransform(direction);
 
@@ -125,16 +122,22 @@ const mergeLine = (line) => {
   return { result, merged, lineScore };
 };
 
-// const isGameOver = (board) => {
-//   for (let r = 0; r < board.length; r++) {
-//     for (let c = 0; c < board[0].length; c++) {
-//       if (c + 1 < board[0].length && board[r][c] === board[r][c + 1])
-//         return false;
-//       if (r + 1 < board[0].length && board[r][c] === board[r + 1][c])
-//         return false;
-//     }
-//   }
-//   return true;
-// };
+const isGameOver = (blocks) => {
+  const board = Array.from({ length: SIZE }, () =>
+    Array.from({ length: SIZE }, () => 0),
+  );
+  blocks.forEach((block) => {
+    board[block.row][block.col] = block.value;
+  });
+  for (let r = 0; r < board.length; r++) {
+    for (let c = 0; c < board[0].length; c++) {
+      if (c + 1 < board[0].length && board[r][c] === board[r][c + 1])
+        return false;
+      if (r + 1 < board[0].length && board[r][c] === board[r + 1][c])
+        return false;
+    }
+  }
+  return true;
+};
 
-export { addNewBlock, moveBlocks };
+export { createInitialState, addNewBlock, moveBlocks };
