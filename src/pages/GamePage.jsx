@@ -18,19 +18,22 @@ const GamePage = () => {
   //   toRemove: false, // 목적: 삭제 애니메이션
   // };
 
+  const nextId = useRef(1);
+
   const reducer = (state, action) => {
     switch (action.type) {
-      case "MOVE":
-        {
-          const { newBlocks, scoreGained, hasChanged } = moveBlocks(
-            state.blocks.map((block) => ({ ...block, merged: false })), // merged 플래그 초기화
-            action.direction,
-          );
-          return state;
-        }
+      case "MOVE": {
+        const {
+          newBlocks: movedBlocks,
+          scoreGained,
+          hasChanged,
+        } = moveBlocks(
+          state.blocks.map((block) => ({ ...block, merged: false })), // merged 플래그 초기화
+          action.direction,
+        );
         if (!hasChanged) return state;
         const { newBlocks, gameOver } = addNewBlock(
-          state.blocks,
+          movedBlocks,
           nextId.current,
         );
         if (!gameOver) nextId.current++;
@@ -40,6 +43,7 @@ const GamePage = () => {
           score: state.score + scoreGained,
           gameOver,
         };
+      }
       case "RESET": {
         return createInitialState();
       }
@@ -47,7 +51,6 @@ const GamePage = () => {
   };
 
   const [state, dispatch] = useReducer(reducer, null, createInitialState);
-  const nextId = useRef(1);
 
   const onClick = () => {};
 
