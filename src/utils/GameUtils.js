@@ -1,5 +1,36 @@
 const SIZE = 4;
 
+const createInitialState = () => {
+  const blocks = [];
+  const empty = [];
+  for (let r = 0; r < SIZE; r++) {
+    for (let c = 0; c < SIZE; c++) {
+      empty.push([r, c]);
+    }
+  }
+  const [r1, c1] = empty.splice(Math.floor(Math.random() * empty.length), 1)[0];
+  const [r2, c2] = empty[Math.floor(Math.random() * empty.length)];
+  blocks.push({
+    id: 1,
+    value: 2,
+    row: r1,
+    col: c1,
+    isNew: true,
+    merged: false,
+    toRemove: false,
+  });
+  blocks.push({
+    id: 2,
+    value: 2,
+    row: r2,
+    col: c2,
+    isNew: true,
+    merged: false,
+    toRemove: false,
+  });
+  return { blocks, score: 0, gameOver: false };
+};
+
 const addNewBlock = (blocks, nextId) => {
   const blockSet = new Set(blocks.map((block) => `${block.row},${block.col}`));
   const empty = [];

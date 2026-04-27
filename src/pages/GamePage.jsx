@@ -1,7 +1,11 @@
 import styles from "./GamePage.module.css";
 import Board from "../components/Board";
 import { useEffect, useReducer } from "react";
-import { addNewBlock, moveBlocks } from "../utils/GameUtils.js";
+import {
+  createInitialState,
+  addNewBlock,
+  moveBlocks,
+} from "../utils/GameUtils.js";
 
 const GamePage = () => {
   // block = {
@@ -13,42 +17,6 @@ const GamePage = () => {
   //   merged: false, // 목적: 병합 애니메이션
   //   toRemove: false, // 목적: 삭제 애니메이션
   // };
-  const createInitialState = () => {
-    const blocks = [];
-    const empty = [];
-    for (let r = 0; r < 4; r++) {
-      for (let c = 0; c < 4; c++) {
-        empty.push([r, c]);
-      }
-    }
-    const [r1, c1] = empty.splice(
-      Math.floor(Math.random() * empty.length),
-      1,
-    )[0];
-    const [r2, c2] = empty[Math.floor(Math.random() * empty.length)];
-    blocks.push({
-      id: 1,
-      value: 2,
-      row: r1,
-      col: c1,
-      isNew: true,
-      merged: false,
-      toRemove: false,
-    });
-    blocks.push({
-      id: 2,
-      value: 2,
-      row: r2,
-      col: c2,
-      isNew: true,
-      merged: false,
-      toRemove: false,
-    });
-    nextId.current = 3;
-    return { blocks, score: 0, gameOver: false };
-  };
-
-  const initialState = createInitialState();
 
   const reducer = (state, action) => {
     switch (action.type) {
@@ -78,7 +46,7 @@ const GamePage = () => {
     }
   };
 
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, null, createInitialState);
   const nextId = useRef(1);
 
   const onClick = () => {};
