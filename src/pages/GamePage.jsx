@@ -18,7 +18,7 @@ const GamePage = () => {
   //   toRemove: false, // 목적: 삭제 애니메이션
   // };
 
-  const nextId = useRef(1);
+  const animationTimer = useRef(null);
 
   const reducer = (state, action) => {
     switch (action.type) {
@@ -28,20 +28,26 @@ const GamePage = () => {
           scoreGained,
           hasChanged,
         } = moveBlocks(
-          state.blocks.map((block) => ({ ...block, merged: false })), // merged 플래그 초기화
+          state.blocks
+            .filter((block) => !block.toRemove)
+            .map((block) => ({ ...block, merged: false })), // merged 플래그 초기화
           action.direction,
         );
         if (!hasChanged) return state;
-        const { newBlocks, gameOver } = addNewBlock(
-          movedBlocks,
-          nextId.current,
-        );
-        if (!gameOver) nextId.current++;
+        const { newBlocks, gameOver } = addNewBlock(movedBlocks, state.nextId);
+        // console.log(newBlocks);
         return {
           ...state,
           blocks: newBlocks,
+          nextId: gameOver ? state.nextId : state.nextId + 1,
           score: state.score + scoreGained,
           gameOver,
+        };
+      }
+      case "REMOVE_MERGED": {
+        return {
+          ...state,
+          blocks: state.blocks.filter((block) => !block.toRemove),
         };
       }
       case "RESET": {
@@ -56,7 +62,18 @@ const GamePage = () => {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
+      if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key))
+        return;
+      if (animationTimer.current) {
+        clearTimeout(animationTimer.current);
+        animationTimer.current = null;
+        dispatch({ type: "REMOVE_MERGED" });
+      }
       dispatch({ type: "MOVE", direction: e.key });
+      animationTimer.current = setTimeout(() => {
+        dispatch({ type: "REMOVE_MERGED" });
+        animationTimer.current = null;
+      }, 100);
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => {

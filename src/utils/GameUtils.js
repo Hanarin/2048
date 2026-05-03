@@ -28,7 +28,7 @@ const createInitialState = () => {
     merged: false,
     toRemove: false,
   });
-  return { blocks, score: 0, gameOver: false };
+  return { blocks, nextId: 3, score: 0, gameOver: false };
 };
 
 const addNewBlock = (blocks, nextId) => {
@@ -71,27 +71,34 @@ const getTransform = (direction) => {
       };
     case "ArrowUp":
       return {
-        pre: (block) => ({ ...block, row: block.col, col: block.row }), // 전치
-        post: (block) => ({ ...block, row: block.col, col: block.row }), // 전치
-      };
-    case "ArrowDown":
-      return {
-        // 상하반전 후 전치
         pre: (block) => ({
           ...block,
           row: SIZE - 1 - block.col,
           col: block.row,
-        }),
-        // 전치 후 상하반전
+        }), // 반시계방향 회전
         post: (block) => ({
           ...block,
           row: block.col,
           col: SIZE - 1 - block.row,
-        }),
+        }), // 시계방향 회전
+      };
+    case "ArrowDown":
+      return {
+        pre: (block) => ({
+          ...block,
+          row: block.col,
+          col: SIZE - 1 - block.row,
+        }), // 시계방향 회전
+        post: (block) => ({
+          ...block,
+          row: SIZE - 1 - block.col,
+          col: block.row,
+        }), // 반시계방향 회전
       };
   }
 };
 
+// TODO: 블럭이 이상하게 옮겨지는 현상 수정, 병합된 블럭 애니메이션 후 삭제
 const moveBlocks = (blocks, direction) => {
   const transform = getTransform(direction);
 
@@ -124,9 +131,13 @@ const moveBlocks = (blocks, direction) => {
   // 이동, 병합 발생 여부 확인
   const hasChanged =
     totalMerged.length > 0 ||
-    totalResult.some((newBlock) => {
+    newBlocks.some((newBlock) => {
       const original = blocks.find((block) => block.id === newBlock.id);
-      return original.row !== newBlock.row || original.col !== newBlock.col;
+      return (
+        newBlock.toRemove ||
+        original.row !== newBlock.row ||
+        original.col !== newBlock.col
+      );
     });
   return { newBlocks, scoreGained: score, hasChanged };
 };

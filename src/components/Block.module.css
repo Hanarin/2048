@@ -14,5 +14,7 @@
     calc(16px + var(--row) * (var(--cell-size) + var(--gap)))
   );
   border-radius: 8px;
-  transition: transform 150ms ease-in-out;
+  transition:
+    transform 100ms ease-in-out,
+    opacity 100ms ease-in-out;
 }

@@ -1,6 +1,6 @@
 import styles from "./Block.module.css";
 
-const Block = ({ key, value, row, col }) => {
+const Block = ({ key, value, row, col, toRemove }) => {
   const colorMap = {
     2: { background: "#FFFFFF", color: "#111" },
     4: { background: "#D0EAF8", color: "#111" },
@@ -22,6 +22,7 @@ const Block = ({ key, value, row, col }) => {
     "--color": colorMap[value]?.color ?? "#333",
     "--row": row,
     "--col": col,
+    opacity: toRemove ? 0 : 1,
   };
 
   return (

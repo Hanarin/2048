@@ -13,6 +13,7 @@ const Board = ({ blocks, score, gameOver }) => {
           value={block.value}
           row={block.row}
           col={block.col}
+          toRemove={block.toRemove}
           style={{
             transform: `translate(${block.col * 100}%, ${block.row * 100}%)`,
             transition: "transform 150ms ease-in-out",
