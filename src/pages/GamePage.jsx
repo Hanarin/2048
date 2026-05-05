@@ -35,12 +35,13 @@ const GamePage = () => {
         );
         if (!hasChanged) return state;
         const { newBlocks, gameOver } = addNewBlock(movedBlocks, state.nextId);
-        // console.log(newBlocks);
+        const score = state.score + scoreGained;
         return {
           ...state,
           blocks: newBlocks,
           nextId: gameOver ? state.nextId : state.nextId + 1,
-          score: state.score + scoreGained,
+          score,
+          bestScore: Math.max(score, state.bestScore),
           gameOver,
         };
       }
@@ -81,17 +82,29 @@ const GamePage = () => {
     };
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem("bestScore", state.bestScore);
+  }, [state.bestScore]);
+
   return (
     <div className={styles.page}>
       <div className={styles.boardWrapper}>
         {!state.gameOver && (
-          <div className={styles.scoreText} onClick={addNewBlock}>
-            SCORE: {state.score}
+          <div className={styles.scoreWrapper}>
+            <div className={styles.scoreTextWrapper}>
+              <div className={styles.scoreTitleText}>SCORE</div>
+              <div className={styles.scoreText}>{state.score}</div>
+            </div>
+            <div className={styles.scoreTextWrapper}>
+              <div className={styles.scoreTitleText}>BEST</div>
+              <div className={styles.scoreText}>{state.bestScore}</div>
+            </div>
           </div>
         )}
         <Board
           blocks={state.blocks}
           score={state.score}
+          bestScore={state.bestScore}
           gameOver={state.gameOver}
         />
       </div>

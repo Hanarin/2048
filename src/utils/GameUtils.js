@@ -1,6 +1,7 @@
 const SIZE = 4;
 
 const createInitialState = () => {
+  const bestScore = Number(localStorage.getItem("bestScore")) || 0;
   const blocks = [];
   const empty = [];
   for (let r = 0; r < SIZE; r++) {
@@ -28,7 +29,7 @@ const createInitialState = () => {
     merged: false,
     toRemove: false,
   });
-  return { blocks, nextId: 3, score: 0, gameOver: false };
+  return { blocks, nextId: 3, score: 0, bestScore, gameOver: false };
 };
 
 const addNewBlock = (blocks, nextId) => {
@@ -98,7 +99,6 @@ const getTransform = (direction) => {
   }
 };
 
-// TODO: 블럭이 이상하게 옮겨지는 현상 수정, 병합된 블럭 애니메이션 후 삭제
 const moveBlocks = (blocks, direction) => {
   const transform = getTransform(direction);
 

@@ -1,7 +1,7 @@
 import styles from "./Board.module.css";
 import Block from "./Block";
 
-const Board = ({ blocks, score, gameOver }) => {
+const Board = ({ blocks, score, bestScore, gameOver }) => {
   return (
     <div className={styles.board}>
       {Array.from({ length: 16 }).map((_, index) => (
@@ -16,16 +16,13 @@ const Board = ({ blocks, score, gameOver }) => {
           isNew={block.isNew}
           merged={block.merged}
           toRemove={block.toRemove}
-          style={{
-            transform: `translate(${block.col * 100}%, ${block.row * 100}%)`,
-            transition: "transform 150ms ease-in-out",
-          }}
         />
       ))}
       {gameOver && (
         <div className={styles.overlay}>
           <span className={styles.gameOverText}>Game Over</span>
           <span className={styles.scoreText}>score: {score}</span>
+          <span className={styles.scoreText}>best score: {bestScore}</span>
         </div>
       )}
     </div>
