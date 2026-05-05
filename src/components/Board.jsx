@@ -13,6 +13,8 @@ const Board = ({ blocks, score, gameOver }) => {
           value={block.value}
           row={block.row}
           col={block.col}
+          isNew={block.isNew}
+          merged={block.merged}
           toRemove={block.toRemove}
           style={{
             transform: `translate(${block.col * 100}%, ${block.row * 100}%)`,

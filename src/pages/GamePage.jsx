@@ -30,7 +30,7 @@ const GamePage = () => {
         } = moveBlocks(
           state.blocks
             .filter((block) => !block.toRemove)
-            .map((block) => ({ ...block, merged: false })), // merged 플래그 초기화
+            .map((block) => ({ ...block, isNew: false, merged: false })), // merged 플래그 초기화
           action.direction,
         );
         if (!hasChanged) return state;
@@ -73,7 +73,7 @@ const GamePage = () => {
       animationTimer.current = setTimeout(() => {
         dispatch({ type: "REMOVE_MERGED" });
         animationTimer.current = null;
-      }, 100);
+      }, 150);
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => {
