@@ -1,8 +1,7 @@
 import styles from "./Block.module.css";
 
-const Block = ({ key, value }) => {
+const Block = ({ key, value, row, col, isNew, merged, toRemove }) => {
   const colorMap = {
-    0: { background: "#BDC3C7" },
     2: { background: "#FFFFFF", color: "#111" },
     4: { background: "#D0EAF8", color: "#111" },
     8: { background: "#A8D4EF", color: "#111" },
@@ -16,14 +15,33 @@ const Block = ({ key, value }) => {
     2048: { background: "#F5C842", color: "#7D6608" },
   };
 
-  const style = {
+  const wrapperStyle = {
+    "--cell-size": "94px",
+    "--gap": "8px",
+    "--row": row,
+    "--col": col,
+    opacity: toRemove ? 0 : 1,
+  };
+
+  const innerStyle = {
     "--bg": colorMap[value]?.background ?? "#E6A817",
     "--color": colorMap[value]?.color ?? "#333",
   };
 
   return (
-    <div className={styles.block} style={style}>
-      {value !== 0 ? value : ""}
+    <div className={styles.blockWrapper} style={wrapperStyle}>
+      <div
+        className={[
+          styles.blockInner,
+          isNew && styles.appear,
+          merged && styles.merge,
+        ]
+          .filter(Boolean)
+          .join(" ")}
+        style={innerStyle}
+      >
+        {value !== 0 ? value : ""}
+      </div>
     </div>
   );
 };

@@ -10,6 +10,12 @@
   border-radius: 16px;
 }
 
+.cell {
+  background-color: rgba(150, 150, 150, 0.1);
+  border-radius: 8px;
+  aspect-ratio: 1 / 1;
+}
+
 .overlay {
   position: absolute;
   inset: 0;
@@ -24,11 +30,12 @@
 
 .gameOverText {
   color: #fff;
-  font-size: 2.5rem;
+  font-size: 40px;
   font-weight: bold;
+  margin-bottom: 12px;
 }
 
 .scoreText {
   color: #fff;
-  font-size: 1.2rem;
+  font-size: 20px;
 }

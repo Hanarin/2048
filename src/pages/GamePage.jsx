@@ -1,63 +1,57 @@
 import styles from "./GamePage.module.css";
 import Board from "../components/Board";
-import { useEffect, useReducer } from "react";
-import { addNewBlock, moveBlocks } from "../utils/GameUtils.js";
+import { useRef, useEffect, useReducer } from "react";
+import {
+  createInitialState,
+  addNewBlock,
+  moveBlocks,
+} from "../utils/GameUtils.js";
 
 const GamePage = () => {
-  const createInitialState = () => {
-    const board = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
-    const empty = [];
-    board.forEach((row, r) =>
-      row.forEach((_, c) => {
-        empty.push([r, c]);
-      }),
-    );
-    const [i1, j1] = empty.splice(
-      Math.floor(Math.random() * empty.length),
-      1,
-    )[0];
-    const [i2, j2] = empty[Math.floor(Math.random() * empty.length)];
-    const newBoard = board.map((row, r) =>
-      row.map((cell, c) =>
-        (r === i1 && c === j1) || (r === i2 && c === j2) ? 2 : cell,
-      ),
-    );
-    return { board: newBoard, score: 0, gameOver: false };
-  };
-
-  const initialState = createInitialState();
-
-  // const initialState = {
-  //   board: [
-  //     [0, 0, 0, 0],
-  //     [0, 0, 0, 0],
-  //     [0, 0, 0, 0],
-  //     [0, 0, 0, 0],
-  //   ],
-  //   score: 0,
-  //   gameOver: false,
+  // block = {
+  //   id: 1,
+  //   value: 2,
+  //   row: 0,
+  //   col: 0,
+  //   isNew: true, // 목적: 생성 애니메이션
+  //   merged: false, // 목적: 병합 애니메이션
+  //   toRemove: false, // 목적: 삭제 애니메이션
   // };
+
+  const animationTimer = useRef(null);
 
   const reducer = (state, action) => {
     switch (action.type) {
       case "MOVE": {
-        const { newBoard: movedBoard, scoreGained } = moveBlocks(
-          state,
+        const {
+          newBlocks: movedBlocks,
+          scoreGained,
+          hasChanged,
+        } = moveBlocks(
+          state.blocks
+            .filter((block) => !block.toRemove)
+            .map((block) => ({ ...block, isNew: false, merged: false })), // merged 플래그 초기화
           action.direction,
         );
-        if (JSON.stringify(state.board) === JSON.stringify(movedBoard))
-          return state;
-        const { newBoard, gameOver } = addNewBlock(movedBoard);
+        if (!hasChanged) return state;
+        const { newBlocks, gameOver } = addNewBlock(
+          movedBlocks.filter((block) => !block.toRemove),
+          state.nextId,
+        );
+        const score = state.score + scoreGained;
         return {
           ...state,
-          board: newBoard,
-          score: state.score + scoreGained,
+          blocks: newBlocks,
+          nextId: gameOver ? state.nextId : state.nextId + 1,
+          score,
+          bestScore: Math.max(score, state.bestScore),
           gameOver,
+        };
+      }
+      case "REMOVE_MERGED": {
+        return {
+          ...state,
+          blocks: state.blocks.filter((block) => !block.toRemove),
         };
       }
       case "RESET": {
@@ -66,13 +60,24 @@ const GamePage = () => {
     }
   };
 
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, null, createInitialState);
 
   const onClick = () => {};
 
   useEffect(() => {
     const handleKeyDown = (e) => {
+      if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key))
+        return;
+      if (animationTimer.current) {
+        clearTimeout(animationTimer.current);
+        animationTimer.current = null;
+        dispatch({ type: "REMOVE_MERGED" });
+      }
       dispatch({ type: "MOVE", direction: e.key });
+      animationTimer.current = setTimeout(() => {
+        dispatch({ type: "REMOVE_MERGED" });
+        animationTimer.current = null;
+      }, 150);
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => {
@@ -80,15 +85,31 @@ const GamePage = () => {
     };
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem("bestScore", state.bestScore);
+  }, [state.bestScore]);
+
   return (
     <div className={styles.page}>
       <div className={styles.boardWrapper}>
         {!state.gameOver && (
-          <div className={styles.scoreText} onClick={addNewBlock}>
-            SCORE: {state.score}
+          <div className={styles.scoreWrapper}>
+            <div className={styles.scoreTextWrapper}>
+              <div className={styles.scoreTitleText}>SCORE</div>
+              <div className={styles.scoreText}>{state.score}</div>
+            </div>
+            <div className={styles.scoreTextWrapper}>
+              <div className={styles.scoreTitleText}>BEST</div>
+              <div className={styles.scoreText}>{state.bestScore}</div>
+            </div>
           </div>
         )}
-        <Board state={state} />
+        <Board
+          blocks={state.blocks}
+          score={state.score}
+          bestScore={state.bestScore}
+          gameOver={state.gameOver}
+        />
       </div>
       {state.gameOver && (
         <button
