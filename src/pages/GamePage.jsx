@@ -34,7 +34,10 @@ const GamePage = () => {
           action.direction,
         );
         if (!hasChanged) return state;
-        const { newBlocks, gameOver } = addNewBlock(movedBlocks, state.nextId);
+        const { newBlocks, gameOver } = addNewBlock(
+          movedBlocks.filter((block) => !block.toRemove),
+          state.nextId,
+        );
         const score = state.score + scoreGained;
         return {
           ...state,

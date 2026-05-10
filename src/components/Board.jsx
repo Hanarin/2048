@@ -21,8 +21,8 @@ const Board = ({ blocks, score, bestScore, gameOver }) => {
       {gameOver && (
         <div className={styles.overlay}>
           <span className={styles.gameOverText}>Game Over</span>
-          <span className={styles.scoreText}>score: {score}</span>
-          <span className={styles.scoreText}>best score: {bestScore}</span>
+          <span className={styles.scoreText}>Score: {score}</span>
+          <span className={styles.scoreText}>Best score: {bestScore}</span>
         </div>
       )}
     </div>
