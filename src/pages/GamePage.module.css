@@ -19,6 +19,7 @@
   display: flex;
   gap: 24px;
   justify-content: center;
+  align-items: center;
   margin-bottom: 8px;
 }
 
@@ -43,14 +44,26 @@
   font-size: 20px;
 }
 
-.replayButton {
-  padding: 16px 128px;
-  font-size: 1rem;
+.newGameButton {
+  font-size: 16px;
   background-color: #0d3c58;
   color: #fff;
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  padding: 18px;
+  margin-left: 64px;
+  height: 100%;
+}
+
+.replayButton {
+  font-size: 16px;
+  background-color: #0d3c58;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 16px 128px;
 }
 
 .replayButton:hover {

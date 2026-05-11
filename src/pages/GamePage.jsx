@@ -55,6 +55,7 @@ const GamePage = () => {
         };
       }
       case "RESET": {
+        localStorage.removeItem("gameState");
         return createInitialState();
       }
     }
@@ -117,6 +118,12 @@ const GamePage = () => {
               <div className={styles.scoreTitleText}>BEST</div>
               <div className={styles.scoreText}>{state.bestScore}</div>
             </div>
+            <button
+              className={styles.newGameButton}
+              onClick={() => dispatch({ type: "RESET" })}
+            >
+              New Game
+            </button>
           </div>
         )}
         <Board
