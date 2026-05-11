@@ -62,8 +62,6 @@ const GamePage = () => {
 
   const [state, dispatch] = useReducer(reducer, null, createInitialState);
 
-  const onClick = () => {};
-
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key))
@@ -88,6 +86,23 @@ const GamePage = () => {
   useEffect(() => {
     localStorage.setItem("bestScore", state.bestScore);
   }, [state.bestScore]);
+
+  useEffect(() => {
+    if (state.gameOver) {
+      localStorage.removeItem("gameState");
+      return;
+    }
+    localStorage.setItem(
+      "gameState",
+      JSON.stringify({
+        blocks: state.blocks
+          .filter((block) => !block.toRemove)
+          .map(({ id, value, row, col }) => ({ id, value, row, col })),
+        score: state.score,
+        nextId: state.nextId,
+      }),
+    );
+  }, [state.blocks, state.score, state.nextId, state.gameOver]);
 
   return (
     <div className={styles.page}>

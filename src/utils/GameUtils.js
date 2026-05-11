@@ -2,6 +2,8 @@ const SIZE = 4;
 
 const createInitialState = () => {
   const bestScore = Number(localStorage.getItem("bestScore")) || 0;
+  const gameState = JSON.parse(localStorage.getItem("gameState"));
+  if (gameState) return { ...gameState, bestScore };
   const blocks = [];
   const empty = [];
   for (let r = 0; r < SIZE; r++) {
