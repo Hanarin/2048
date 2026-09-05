@@ -112,7 +112,7 @@ const moveBlocks = (blocks, direction) => {
   const normalized = blocks.map(transform.pre);
   normalized.forEach((block) => rows[block.row].push(block));
   // 정렬 및 왼쪽 방향 기준 병합
-  rows.forEach((row, index) => {
+  rows.forEach((row) => {
     row.sort((a, b) => a.col - b.col); // col에 대해 오름차순
     const { result, merged, lineScore } = mergeLine(row);
     totalResult.push(...result);
