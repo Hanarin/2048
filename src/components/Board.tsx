@@ -1,7 +1,15 @@
 import styles from "./Board.module.css";
 import Block from "./Block";
+import type { Block as BlockType } from "../types";
 
-const Board = ({ blocks, score, bestScore, gameOver }) => {
+interface BoardProps {
+  blocks: BlockType[];
+  score: number;
+  bestScore: number;
+  gameOver: boolean;
+}
+
+const Board = ({ blocks, score, bestScore, gameOver }: BoardProps) => {
   return (
     <div className={styles.board}>
       {Array.from({ length: 16 }).map((_, index) => (
