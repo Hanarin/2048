@@ -1,11 +1,27 @@
-const SIZE = 4;
+import type {
+  Block,
+  Direction,
+  GameState,
+  MergedBlock,
+  SavedGameState,
+} from "../types";
+import { SIZE } from "../types";
 
-const createInitialState = () => {
+const createInitialState = (): GameState => {
   const bestScore = Number(localStorage.getItem("bestScore")) || 0;
-  const gameState = JSON.parse(localStorage.getItem("gameState"));
-  if (gameState) return { ...gameState, bestScore };
-  const blocks = [];
-  const empty = [];
+  const saved = localStorage.getItem("gameState");
+  const gameState: SavedGameState | null = saved ? JSON.parse(saved) : null;
+  if (gameState) {
+    const blocks: Block[] = gameState.blocks.map((b) => ({
+      ...b,
+      isNew: false,
+      merged: false,
+      toRemove: false,
+    }));
+    return { ...gameState, blocks, bestScore, gameOver: false };
+  }
+  const blocks: Block[] = [];
+  const empty: [number, number][] = [];
   for (let r = 0; r < SIZE; r++) {
     for (let c = 0; c < SIZE; c++) {
       empty.push([r, c]);
@@ -34,9 +50,12 @@ const createInitialState = () => {
   return { blocks, nextId: 3, score: 0, bestScore, gameOver: false };
 };
 
-const addNewBlock = (blocks, nextId) => {
+const addNewBlock = (
+  blocks: Block[],
+  nextId: number,
+): { newBlocks: Block[]; gameOver: boolean } => {
   const blockSet = new Set(blocks.map((block) => `${block.row},${block.col}`));
-  const empty = [];
+  const empty: [number, number][] = [];
   const newBlocks = blocks.map((block) => ({ ...block }));
   for (let r = 0; r < SIZE; r++) {
     for (let c = 0; c < SIZE; c++) {
@@ -60,7 +79,9 @@ const addNewBlock = (blocks, nextId) => {
   }
 };
 
-const getTransform = (direction) => {
+const getTransform = (
+  direction: Direction,
+): { pre: (block: Block) => Block; post: (block: Block) => Block } => {
   switch (direction) {
     case "ArrowLeft":
       return {
@@ -101,13 +122,16 @@ const getTransform = (direction) => {
   }
 };
 
-const moveBlocks = (blocks, direction) => {
+const moveBlocks = (
+  blocks: Block[],
+  direction: Direction,
+): { newBlocks: Block[]; scoreGained: number; hasChanged: boolean } => {
   const transform = getTransform(direction);
 
   let score = 0;
-  const totalResult = [];
-  const totalMerged = [];
-  const rows = [[], [], [], []];
+  const totalResult: Block[] = [];
+  const totalMerged: MergedBlock[] = [];
+  const rows: Block[][] = [[], [], [], []];
   // 선변환
   const normalized = blocks.map(transform.pre);
   normalized.forEach((block) => rows[block.row].push(block));
@@ -122,6 +146,7 @@ const moveBlocks = (blocks, direction) => {
   // [애니메이션] 병합된 블록을 흡수한 블록의 위치로 이동
   totalMerged.forEach((m) => {
     const absorber = totalResult.find((r) => r.id === m.mergeTargetId);
+    if (!absorber) return;
     m.row = absorber.row;
     m.col = absorber.col;
   });
@@ -135,6 +160,7 @@ const moveBlocks = (blocks, direction) => {
     totalMerged.length > 0 ||
     newBlocks.some((newBlock) => {
       const original = blocks.find((block) => block.id === newBlock.id);
+      if (!original) return true;
       return (
         newBlock.toRemove ||
         original.row !== newBlock.row ||
@@ -144,10 +170,12 @@ const moveBlocks = (blocks, direction) => {
   return { newBlocks, scoreGained: score, hasChanged };
 };
 
-const mergeLine = (line) => {
+const mergeLine = (
+  line: Block[],
+): { result: Block[]; merged: MergedBlock[]; lineScore: number } => {
   let lineScore = 0;
-  const result = [];
-  const merged = [];
+  const result: Block[] = [];
+  const merged: MergedBlock[] = [];
   for (const block of line) {
     const last = result[result.length - 1];
     if (last && last.value === block.value && !last.merged) {
@@ -166,7 +194,7 @@ const mergeLine = (line) => {
   return { result, merged, lineScore };
 };
 
-const isGameOver = (blocks) => {
+const isGameOver = (blocks: Block[]): boolean => {
   const board = Array.from({ length: SIZE }, () =>
     Array.from({ length: SIZE }, () => 0),
   );

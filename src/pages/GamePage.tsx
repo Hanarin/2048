@@ -6,21 +6,26 @@ import {
   addNewBlock,
   moveBlocks,
 } from "../utils/GameUtils.js";
+import type { Direction, GameState, SavedGameState } from "../types";
+
+type Action =
+  | { type: "MOVE"; direction: Direction }
+  | { type: "REMOVE_MERGED" }
+  | { type: "RESET" };
+
+const ARROW_KEYS: Direction[] = [
+  "ArrowUp",
+  "ArrowDown",
+  "ArrowLeft",
+  "ArrowRight",
+];
+
+const ANIMATION_MS = 150;
 
 const GamePage = () => {
-  // block = {
-  //   id: 1,
-  //   value: 2,
-  //   row: 0,
-  //   col: 0,
-  //   isNew: true, // 목적: 생성 애니메이션
-  //   merged: false, // 목적: 병합 애니메이션
-  //   toRemove: false, // 목적: 삭제 애니메이션
-  // };
+  const animationTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const animationTimer = useRef(null);
-
-  const reducer = (state, action) => {
+  const reducer = (state: GameState, action: Action): GameState => {
     switch (action.type) {
       case "MOVE": {
         const {
@@ -64,19 +69,18 @@ const GamePage = () => {
   const [state, dispatch] = useReducer(reducer, null, createInitialState);
 
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key))
-        return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!ARROW_KEYS.includes(e.key as Direction)) return;
       if (animationTimer.current) {
         clearTimeout(animationTimer.current);
         animationTimer.current = null;
         dispatch({ type: "REMOVE_MERGED" });
       }
-      dispatch({ type: "MOVE", direction: e.key });
+      dispatch({ type: "MOVE", direction: e.key as Direction });
       animationTimer.current = setTimeout(() => {
         dispatch({ type: "REMOVE_MERGED" });
         animationTimer.current = null;
-      }, 150);
+      }, ANIMATION_MS);
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => {
@@ -85,7 +89,7 @@ const GamePage = () => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("bestScore", state.bestScore);
+    localStorage.setItem("bestScore", String(state.bestScore));
   }, [state.bestScore]);
 
   useEffect(() => {
@@ -93,16 +97,14 @@ const GamePage = () => {
       localStorage.removeItem("gameState");
       return;
     }
-    localStorage.setItem(
-      "gameState",
-      JSON.stringify({
-        blocks: state.blocks
-          .filter((block) => !block.toRemove)
-          .map(({ id, value, row, col }) => ({ id, value, row, col })),
-        score: state.score,
-        nextId: state.nextId,
-      }),
-    );
+    const savedGameState: SavedGameState = {
+      blocks: state.blocks
+        .filter((block) => !block.toRemove)
+        .map(({ id, value, row, col }) => ({ id, value, row, col })),
+      score: state.score,
+      nextId: state.nextId,
+    };
+    localStorage.setItem("gameState", JSON.stringify(savedGameState));
   }, [state.blocks, state.score, state.nextId, state.gameOver]);
 
   return (
