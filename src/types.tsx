@@ -13,7 +13,7 @@ export interface Block {
 }
 
 export interface MergedBlock extends Block {
-  margeTargetId: number;
+  mergeTargetId: number;
 }
 
 export interface GameState {
